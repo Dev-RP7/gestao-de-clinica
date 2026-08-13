@@ -23,15 +23,14 @@ Uma API RESTful desenvolvida com **Java** e **Spring Boot** para gerenciamento d
 
 O projeto foi desenvolvido seguindo a arquitetura em camadas, promovendo organização, reutilização de código e facilidade de manutenção.
 
-```
 Controller
-    ↓
+↓
 Service
-    ↓
+↓
 Repository
-    ↓
+↓
 Banco de Dados
-```
+
 
 ### Recursos implementados
 
@@ -200,9 +199,8 @@ git clone https://github.com/Dev-RP7/gestao-de-clinica.git
 
 Edite o arquivo:
 
-```
 src/main/resources/application.properties
-```
+
 
 Configure:
 
@@ -214,9 +212,8 @@ Configure:
 
 A API ficará disponível em:
 
-```
 http://localhost:8080
-```
+
 
 ---
 
