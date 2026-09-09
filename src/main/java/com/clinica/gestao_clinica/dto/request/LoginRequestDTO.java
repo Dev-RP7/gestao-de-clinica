@@ -1,4 +1,14 @@
 package com.clinica.gestao_clinica.dto.request;
 
-public record LoginRequestDTO() {
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequestDTO(
+
+        @NotBlank
+        String email,
+
+        @NotBlank
+        String senha
+
+) {
 }

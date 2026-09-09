@@ -45,16 +45,6 @@ public class PacienteController {
         return ResponseEntity.ok(pacienteService.buscarPorId(id));
 
     }
-/*
-
-    @GetMapping("/cpf/{cpf}")
-
-    @GetMapping("/nome/{nome}")
-
-    @GetMapping("/{id}/consultas")
-
-    @GetMapping("/{id}/prontuario")
-*/
 
     @PutMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> atualizar(

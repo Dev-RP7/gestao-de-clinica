@@ -17,4 +17,8 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
     List<Consulta> findByDataConsulta(LocalDateTime inicio, LocalDateTime fim);
 
+    long countByStatusConsulta(StatusConsulta status);
+
+    long countByDataConsultaBetween(LocalDateTime inicio, LocalDateTime fim);
+
 }

@@ -46,10 +46,6 @@ public class UsuarioController {
 
         return ResponseEntity.ok(usuario);
     }
-/*
-
-    @GetMapping("/email/{email)")
-*/
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> atualizar(
@@ -71,12 +67,4 @@ public class UsuarioController {
 
         return ResponseEntity.noContent().build();
     }
-/*
-
-    @PatchMapping("/{id}/senha")
-
-    @PatchMapping("/{id}/ativo")
-*/
-
-
 }

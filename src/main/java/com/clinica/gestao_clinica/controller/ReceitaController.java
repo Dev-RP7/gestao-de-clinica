@@ -42,8 +42,6 @@ public class ReceitaController {
 
     }
 
-    @GetMapping("/prontuario/{prontuarioId}")
-
     @PutMapping("/{id}")
     public ResponseEntity<ReceitaResponseDTO> atualizarReceita(
             @PathVariable Long id,

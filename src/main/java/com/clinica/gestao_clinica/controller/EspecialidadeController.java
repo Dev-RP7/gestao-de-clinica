@@ -50,19 +50,4 @@ public class EspecialidadeController {
                 especialidadeService.buscarPorNome(nome)
         );
     }
-
-/*
-    @GetMapping("/{id}/medicos")
-    public ResponseEntity<List<EspecialidadeResponseDTO>> listarPorMedicos(
-        @PathVariable Long id
-    ) {
-
-        return ResponseEntity.ok(
-                especialidadeService.buscarMedicoEspecialista(id)
-        );
-    }
-*/
-
-
-
 }

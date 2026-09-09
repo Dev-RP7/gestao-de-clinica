@@ -44,12 +44,6 @@ public class ProntuarioController {
         return ResponseEntity.ok(prontuarioService.buscarPorId(id));
 
     }
-/*
-
-    @GetMapping("/consulta/{consultaId}")
-
-    @GetMapping("/paciente/{pacienteId}")
-*/
 
     @PutMapping("/{id}")
     public ResponseEntity<ProntuarioResponseDTO> atualizar(

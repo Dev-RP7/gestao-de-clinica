@@ -50,14 +50,6 @@ public class MedicoController {
         return ResponseEntity.ok(medico);
 
     }
-/*
-
-    @GetMapping("/crm/{crm}")
-
-    @GetMapping("/especialidade/{id}")
-
-    @GetMapping("/{id}/consultas")
-*/
 
     @PutMapping("/{id}")
     public ResponseEntity<MedicoResponseDTO> atualizar(

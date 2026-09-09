@@ -47,48 +47,6 @@ public class ConsultaController {
 
     }
 
-    @GetMapping("/paciente/{id}")
-    public ResponseEntity<List<ConsultaResponseDTO>> listarPorPaciente(
-            @PathVariable Long pacienteId){
-
-        return ResponseEntity.ok(
-                consultaService.listarConsultasDoPaciente(pacienteId)
-        );
-    }
-
-    @GetMapping("/medico/{nome}")
-    public ResponseEntity<List<ConsultaResponseDTO>> listarPorMedico(
-            @PathVariable String nome
-    ) {
-
-        return ResponseEntity.ok(
-                consultaService.buscarPorMedico(nome)
-        );
-
-    }
-
-
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<ConsultaResponseDTO>> listarPorStatus(
-            @PathVariable StatusConsulta status
-    ) {
-
-        return ResponseEntity.ok(
-                consultaService.buscarPorStatus(status)
-        );
-    }
-
-    @GetMapping("/data/{data}")
-    public ResponseEntity<List<ConsultaResponseDTO>> listarPorData(
-            @PathVariable LocalDate data
-    ) {
-
-        return ResponseEntity.ok(
-                consultaService.buscarPorDataConsulta(data)
-        );
-    }
-
-
     @PutMapping("/{id}")
     public ResponseEntity<ConsultaResponseDTO> atualizarConsulta(
             @PathVariable Long id,
@@ -99,15 +57,6 @@ public class ConsultaController {
 
     }
 
-    @DeleteMapping("/paciente/{pacienteId}")
-    public ResponseEntity<ConsultaResponseDTO> cancelarConsulta(
-            @PathVariable Long id) {
-
-        return ResponseEntity.ok(
-                consultaService.cancelarConsulta(id)
-        );
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<ConsultaResponseDTO> deletarConsulta(
             @PathVariable Long id
@@ -115,28 +64,4 @@ public class ConsultaController {
         consultaService.cancelarConsulta(id);
         return ResponseEntity.noContent().build();
     }
-
-
-    @PatchMapping("/{id}/confirmar")
-    public ResponseEntity<ConsultaResponseDTO> confirmarConsulta(
-            @PathVariable Long id
-    ) {
-
-        return ResponseEntity.ok(
-                consultaService.confirmarConsulta(id)
-        );
-    }
-
-    @PatchMapping("/{id}/concluir")
-    public ResponseEntity<ConsultaResponseDTO> concluirConsulta(
-            @PathVariable Long id
-    ) {
-
-        return  ResponseEntity.ok(
-                consultaService.concluirConsulta(id)
-        );
-    }
-
-
-
 }
