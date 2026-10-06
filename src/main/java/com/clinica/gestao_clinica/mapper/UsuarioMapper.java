@@ -1,37 +1,33 @@
+// Pacote dos mappers.
 package com.clinica.gestao_clinica.mapper;
 
+// DTO e entidade.
 import com.clinica.gestao_clinica.dto.response.UsuarioResponseDTO;
 import com.clinica.gestao_clinica.entity.Usuario;
 
+// Conversões de Usuario.
 public class UsuarioMapper {
 
-    private UsuarioMapper() {}
-
-    public static Usuario toEntity(
-            UsuarioResponseDTO dto
-    ) {
-
-        Usuario usuario = new Usuario();
-
-        usuario.setNome(dto.nome());
-        usuario.setEmail(dto.email());
-        usuario.setTelefone(dto.telefone());
-        usuario.setTipoUsuario(dto.tipoUsuario());
-        usuario.setAtivo(dto.ativo());
-
-        return usuario;
+    // Impede instanciar a classe.
+    private UsuarioMapper() {
     }
 
+    // Converte a entidade em DTO de resposta (sem a senha).
     public static UsuarioResponseDTO toResponse(Usuario usuario) {
-
-        return new  UsuarioResponseDTO(
+        // Monta o record.
+        return new UsuarioResponseDTO(
+                // Id.
                 usuario.getId(),
+                // Nome.
                 usuario.getNome(),
+                // E-mail.
                 usuario.getEmail(),
+                // Telefone.
                 usuario.getTelefone(),
+                // Perfil.
                 usuario.getTipoUsuario(),
+                // Ativo.
                 usuario.getAtivo()
         );
-
     }
 }

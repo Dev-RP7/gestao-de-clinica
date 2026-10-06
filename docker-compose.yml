@@ -1,0 +1,77 @@
+# =====================================================================
+# Sobe o banco MySQL e a API juntos com um único comando:
+#   docker compose up --build
+# Valores como ${DB_PASSWORD:-clinica123} vêm do arquivo .env (se existir); senão, usam o padrão após ":-".
+# =====================================================================
+
+# Lista de serviços (containers).
+services:
+
+  # ----- Banco de dados -----
+  mysql:
+    # Imagem oficial do MySQL 8.4.
+    image: mysql:8.4
+    # Nome fixo do container.
+    container_name: clinica-mysql
+    # Variáveis de ambiente lidas pela imagem do MySQL.
+    environment:
+      # Cria o banco "clinica" automaticamente.
+      MYSQL_DATABASE: clinica
+      # Senha do usuário root.
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-clinica123}
+    # Expõe o MySQL na porta 3307 do seu computador (3307 para não brigar com um MySQL local na 3306).
+    ports:
+      - "3307:3306"
+    # Guarda os dados num volume: eles sobrevivem quando o container é recriado.
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # Verifica se o MySQL já está pronto para receber conexões.
+    healthcheck:
+      # Comando de checagem ($$ escapa o $ para o compose não substituir a variável).
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      # Checa a cada 5 segundos.
+      interval: 5s
+      # Tempo máximo de cada checagem.
+      timeout: 5s
+      # Tentativas antes de considerar "não saudável".
+      retries: 20
+
+  # ----- API Spring Boot -----
+  api:
+    # Constrói a imagem usando o Dockerfile desta pasta.
+    build: .
+    # Nome fixo do container.
+    container_name: clinica-api
+    # Só inicia a API depois que o MySQL estiver saudável.
+    depends_on:
+      mysql:
+        condition: service_healthy
+    # Variáveis lidas pelo application.properties (${DB_URL}, ${JWT_SECRET}...).
+    environment:
+      # Perfil "docker" (assim o perfil "local" não é ativado).
+      SPRING_PROFILES_ACTIVE: docker
+      # Dentro da rede do compose, o host do banco é o nome do serviço: "mysql".
+      DB_URL: jdbc:mysql://mysql:3306/clinica
+      # Usuário do banco.
+      DB_USERNAME: root
+      # Senha do banco (a mesma do serviço mysql).
+      DB_PASSWORD: ${DB_PASSWORD:-clinica123}
+      # Chave do JWT. Defina uma de verdade no .env.
+      JWT_SECRET: ${JWT_SECRET:-troque-esta-chave-no-arquivo-env}
+      # Administrador inicial.
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@clinica.com}
+      # Senha do administrador inicial.
+      ADMIN_SENHA: ${ADMIN_SENHA:-admin123}
+      # Origens liberadas no CORS (o Angular local).
+      CORS_ORIGENS: ${CORS_ORIGENS:-http://localhost:4200}
+    # Expõe a API na porta 8080 do seu computador.
+    ports:
+      - "8080:8080"
+    # Mapeia a pasta de logs do container para ./logs no seu computador.
+    volumes:
+      - ./logs:/app/logs
+
+# Volumes nomeados usados acima.
+volumes:
+  # Dados do MySQL.
+  mysql-data:

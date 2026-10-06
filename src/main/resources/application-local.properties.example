@@ -1,0 +1,14 @@
+# Modelo de configuração local.
+# Copie este arquivo para "application-local.properties" (na mesma pasta) e preencha com os seus dados.
+# O application-local.properties está no .gitignore, então suas senhas não vão para o GitHub.
+
+# Banco de dados local.
+spring.datasource.url=jdbc:mysql://localhost:3306/clinica?createDatabaseIfNotExist=true
+spring.datasource.username=usuario_aqui
+spring.datasource.password=senha_do_banco_de_dados_aqui
+
+# Chave do JWT para desenvolvimento.
+api.security.token.secret=uma-chave-secreta-qualquer
+
+# Mostra os SQLs no console (útil para estudar).
+spring.jpa.show-sql=true

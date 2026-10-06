@@ -1,0 +1,14 @@
+# Arquivos que NÃO devem ser enviados para o Docker durante o build.
+
+# Saída de compilação local (o Docker compila do zero).
+target/
+# Configurações locais com senhas: nunca podem entrar na imagem.
+**/application-local.properties
+.env
+# Logs gerados localmente.
+logs/
+# Pastas de IDE e do Git.
+.idea/
+.vscode/
+.git/
+*.iml
