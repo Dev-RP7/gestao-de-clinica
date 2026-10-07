@@ -1,0 +1,103 @@
+# =====================================================================
+# Pipeline de CI/CD com GitHub Actions.
+#   CI (Integração Contínua): a cada push ou pull request, compila o projeto e roda os testes.
+#   CD (Entrega Contínua): quando o código entra na "main" e os testes passam,
+#       gera a imagem Docker e publica no GitHub Container Registry (ghcr.io).
+# Acompanhe as execuções na aba "Actions" do repositório.
+# =====================================================================
+
+# Nome que aparece na aba Actions.
+name: CI/CD
+
+# Quando o pipeline roda.
+on:
+  # A cada push na main.
+  push:
+    branches: [main]
+  # A cada pull request apontando para a main.
+  pull_request:
+    branches: [main]
+  # Permite rodar manualmente pelo botão "Run workflow" na aba Actions.
+  workflow_dispatch:
+
+# Se um novo push chegar na mesma branch, cancela a execução antiga (economiza tempo).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ----- Job 1: CI (build + testes) -----
+  testes:
+    name: Build e testes
+    # Máquina virtual Linux fornecida pelo GitHub.
+    runs-on: ubuntu-latest
+    steps:
+      # Baixa o código do repositório para a máquina.
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      # Instala o Java 21 (mesma versão do pom.xml) e guarda as dependências do Maven em cache.
+      - name: Instalar Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # Compila e roda todos os testes. Os testes usam o perfil "test" (banco H2 em memória),
+      # por isso não precisamos de MySQL aqui.
+      - name: Compilar e rodar os testes
+        run: ./mvnw -B verify
+
+      # Se algum teste falhar, guarda os relatórios para você baixar e ver o motivo.
+      - name: Guardar relatórios dos testes
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-testes
+          path: target/surefire-reports/
+
+  # ----- Job 2: CD (imagem Docker) -----
+  docker:
+    name: Publicar imagem Docker
+    # Só começa se o job "testes" passar.
+    needs: testes
+    # Só publica em push na main (em pull request, não).
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # Permissão para publicar pacotes no ghcr.io usando o token automático do GitHub.
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      # Faz login no GitHub Container Registry. O GITHUB_TOKEN é criado automaticamente:
+      # não é preciso cadastrar nenhum secret.
+      - name: Login no GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Gera as tags da imagem: "latest" e o hash curto do commit (ex.: sha-a1b2c3d).
+      - name: Definir tags da imagem
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest
+            type=sha
+
+      # Constrói a imagem usando o Dockerfile da raiz e envia para o ghcr.io.
+      - name: Build e push da imagem
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
