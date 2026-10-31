@@ -2,8 +2,6 @@
 
 API RESTful desenvolvida com **Java** e **Spring Boot** para gerenciamento de uma clínica médica: usuários, médicos, pacientes, especialidades, consultas, prontuários e receitas, com autenticação **JWT**, controle de acesso por perfil, paginação, filtros, tratamento de erros padronizado, logs, testes automatizados e Docker.
 
-> 💡 **Para estudar:** todo o código Java tem um comentário `//` acima de cada linha explicando o que ela faz. Uma boa ordem de leitura é: `entity` → `repository` → `service` → `controller` → `security` → `exception`.
-
 ---
 
 ## Tecnologias
